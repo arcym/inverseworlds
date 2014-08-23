@@ -4,7 +4,7 @@ var level, layer, player, stars, cursors, overhead, score = 0;
 
 var jumpstate = {
 	height: 0,
-	amount: 2
+	again: true
 };
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
@@ -34,6 +34,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		player = game.add.sprite(32*3, 32*(level.height - 5), "player");
 		
 		game.physics.enable(player);
+		player.body.bounce.y = 0.3;
 		player.body.linearDamping = 1;
 		player.body.collideWorldBounds = true;
 		
@@ -53,15 +54,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		overhead.fixedToCamera = true;
 		
 		cursors = game.input.keyboard.createCursorKeys();
-		jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-		jumpButton.onDown.add(function()
-		{
-			if(jumpstate.amount > 0)
-			{
-				jumpstate.amount -= 1;
-				player.body.velocity.y = 500 * -1;
-			}
-		});
 	},
 	
 	update: function()
@@ -74,15 +66,45 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			score += 10;
 		});
 		
-		player.body.velocity.x = 0;
 		if(cursors.left.isDown)
+		{
 			player.body.velocity.x = -150;
+		}
 		else if(cursors.right.isDown)
+		{
 			player.body.velocity.x = 150;
+		}
+		else
+		{
+			player.body.velocity.x = 0;
+		}
+		
+		if(cursors.up.isDown && jumpstate.height < 8)
+		{
+			player.body.allowGravity = false;
+			player.body.velocity.y = 320 * -1;
+			
+			jumpstate.height += 1;
+		}
+		else
+		{
+			player.body.allowGravity = true;
+			
+			if(jumpstate.again)
+			{
+				jumpstate.height = 0;
+				jumpstate.again = false;
+			}
+		}
 		
 		if(player.body.onFloor())
-			jumpstate.amount = 2;
+		{
+			jumpstate.height = 0;
+			jumpstate.again = true;
+		}
 		
-		overhead.text = player.body.velocity.y;
+		overhead.text = jumpstate.height;
+		overhead.text = player.body.velocity.y.toFixed(2);
+		overhead.text = jumpstate.again;
 	}
 });
