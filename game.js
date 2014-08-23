@@ -4,9 +4,8 @@ var level, layer, player, stars, cursors, ui, score = 0;
 
 var jumpstate = {
 	height: 0,
-	again: true
+	again: 2
 };
-var JUMP_FORCE = 100;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
@@ -21,7 +20,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	create: function()
 	{
 		game.physics.startSystem(Phaser.Physics.ARCADE);
-		game.physics.arcade.gravity.y = 200;
+		game.physics.arcade.gravity.y = 800;
 		
 		game.stage.backgroundColor = "#787878";
 		
@@ -35,8 +34,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		player = game.add.sprite(32*3, 32*(level.height - 5), "player");
 		
 		game.physics.enable(player);
-		player.body.bounce.y = 0.1;
-		player.body.gravity.y = 500;
 		player.body.linearDamping = 1;
 		player.body.collideWorldBounds = true;
 		
@@ -54,7 +51,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			star.body.bounce.y = 0.7 + Math.random() * 0.2;
 		}
 		
-		ui = game.add.text(16, 16, "jump: 0", {fontSize: "32px", fill: "#000"});
+		ui = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#000"});
 		ui.fixedToCamera = true;
 	},
 	
@@ -76,23 +73,31 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		if(player.body.onFloor())
 		{
-			jumpstate.height = 0;
-			jumpstate.again = true;
+			//jumpstate.height = 0;
+			jumpstate.amount = 2;
 		}
 		
-		if(this.input.keyboard.justPressed(Phaser.Keyboard.UP))
+		if(player.body.velocity.y == 0)
 		{
-			if(!player.body.onFloor())
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.UP))
 			{
-				if(jumpstate.again)
+				jumpstate.amount -= 1;
+				player.body.velocity.y = 500 * -1;
+			}
+		}
+		else if(player.body.velocity.y > 0)
+		{
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.UP))
+			{
+				if(jumpstate.amount > 0)
 				{
-					jumpstate.height = 2;
-					jumpstate.again = false;
-					player.body.velocity.y = -JUMP_FORCE;
+					jumpstate.amount -= 1;
+					player.body.velocity.y = 500 * -1;
 				}
 			}
 		}
-		else if(cursors.up.isDown)
+		
+		/*else if(cursors.up.isDown)
 		{
 			if(player.body.velocity.y < 0)
 			{
@@ -102,15 +107,16 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 					jumpstate.height++;
 				}
 			}
-		}
+		}*/
 		
 		game.physics.arcade.overlap(player, stars, function(player, star)
 		{
 			star.kill();
-			
-			ui.text = "score: " + (score += 10);
+			score += 10;
 		},
 		null, this);
+		
+		ui.text = player.body.velocity.y;
 	},
 	
 	render: function()
