@@ -21,6 +21,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	{
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 		game.physics.arcade.gravity.y = 800;
+		game.physics.arcade.TILE_BIAS = 27;
 		
 		game.stage.backgroundColor = "#787878";
 		
@@ -31,11 +32,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		layer = level.createLayer("FirstLayer");
 		layer.resizeWorld();
 		
-		player = game.add.sprite(32*3, 32*(level.height - 5), "player");
+		player = game.add.sprite(32*3, 32*5, "player");
 		
 		game.physics.enable(player);
-		player.body.bounce.y = 0.3;
-		player.body.linearDamping = 1;
 		player.body.collideWorldBounds = true;
 		
 		game.camera.follow(player);
