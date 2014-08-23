@@ -1,6 +1,6 @@
 var WIDTH = 640, HEIGHT = 480;
 
-var level, layer, player, stars, cursors;
+var level, layer, player, stars, cursors, ui, score = 0;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
@@ -46,6 +46,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			star.body.gravity.y = 6;
 			star.body.bounce.y = 0.7 + Math.random() * 0.2;
 		}
+		
+		ui = game.add.text(16, 16, "score: 0", {fontSize: "32px", fill: "#000"});
+		ui.fixedToCamera = true;
 	},
 	
 	update: function()
@@ -71,6 +74,15 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 				player.body.velocity.y = -200;
 			}
 		}
+		
+		game.physics.arcade.overlap(player, stars, function(player, star)
+		{
+			star.kill();
+			
+			score += 10;
+			ui.text = "score: " + score;
+		},
+		null, this);
 	},
 	
 	render: function()
