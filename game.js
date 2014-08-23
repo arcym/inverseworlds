@@ -1,4 +1,4 @@
-var WIDTH = 728, HEIGHT = 480;
+var WIDTH = 720+20, HEIGHT = 480+20;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
