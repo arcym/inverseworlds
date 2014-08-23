@@ -1,7 +1,12 @@
 var WIDTH = 640, HEIGHT = 480;
 
 var level, layer, player, stars, cursors, ui, score = 0;
-var jump_velocity = 0, JUMP_FORCE = 100;
+
+var jumpstate = {
+	height: 0,
+	again: true
+};
+var JUMP_FORCE = 100;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
@@ -71,16 +76,31 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		if(player.body.onFloor())
 		{
-			jump_velocity = 0;
+			jumpstate.height = 0;
+			jumpstate.again = true;
 		}
 		
-		if(cursors.up.isDown)
+		if(this.input.keyboard.justPressed(Phaser.Keyboard.UP))
 		{
-			if(player.body.velocity.y < 0
-			&& jump_velocity < 5)
+			if(!player.body.onFloor())
 			{
-				player.body.velocity.y -= JUMP_FORCE;
-				jump_velocity++;
+				if(jumpstate.again)
+				{
+					jumpstate.height = 2;
+					jumpstate.again = false;
+					player.body.velocity.y = -JUMP_FORCE;
+				}
+			}
+		}
+		else if(cursors.up.isDown)
+		{
+			if(player.body.velocity.y < 0)
+			{
+				if(jumpstate.height < 5)
+				{
+					player.body.velocity.y -= JUMP_FORCE;
+					jumpstate.height++;
+				}
 			}
 		}
 		
