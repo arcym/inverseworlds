@@ -1,7 +1,7 @@
 var WIDTH = 640, HEIGHT = 480;
 
 var level, layer, player, stars, cursors, ui, score = 0;
-var jump = 0, JUMP_FORCE = 100;
+var jump_velocity = 0, JUMP_FORCE = 100;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
@@ -69,27 +69,26 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			player.body.velocity.x = 150;
 		}
 		
-		if(cursors.up.isDown)
-		{
-			if(jump <= 300)
-			{
-				player.body.velocity.y -= JUMP_FORCE;
-				jump += JUMP_FORCE;
-				ui.text = "jump: " + jump;
-			}
-		}
-		
 		if(player.body.onFloor())
 		{
-			jump = 0;
-			ui.text = "jump: " + jump;
+			jump_velocity = 0;
+		}
+		
+		if(cursors.up.isDown)
+		{
+			if(player.body.velocity.y < 0
+			&& jump_velocity < 5)
+			{
+				player.body.velocity.y -= JUMP_FORCE;
+				jump_velocity++;
+			}
 		}
 		
 		game.physics.arcade.overlap(player, stars, function(player, star)
 		{
 			star.kill();
 			
-			score += 10;
+			ui.text = "score: " + (score += 10);
 		},
 		null, this);
 	},
