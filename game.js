@@ -7,6 +7,8 @@ var jumpstate = {
 	again: true
 };
 
+var cx = 0, cy = 2;
+
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
 	preload: function()
@@ -32,13 +34,12 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		layer = level.createLayer("FirstLayer");
 		layer.resizeWorld();
 		
-		player = game.add.sprite(32*3, 32*5, "player");
+		game.camera.x = (20 * cx) * 32;
+		game.camera.y = (15 * cy) * 32;
 		
+		player = game.add.sprite(32*3, 32*(level.height-3), "player");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
-		
-		game.camera.follow(player);
-		//game.camera.y += 32*25;
 		
 		stars = game.add.group();
 		stars.enableBody = true;
