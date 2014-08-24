@@ -2,14 +2,12 @@ var WIDTH = 640, HEIGHT = 480;
 var ROOM_WIDTH = 20, ROOM_HEIGHT = 15;
 var TILE_SIZE = 32;
 
-var level, layer, player, stars, cursors, overhead, score = 0;
+var level, tiles, player, stars, cursors, overhead, score = 0, portals;
 
 var jumpstate = {
 	height: 0,
 	again: true
 };
-
-var cx = 0, cy = 2;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
@@ -19,6 +17,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		game.load.image("tiles", "tiles.png");
 		game.load.image("player", "player.png");
 		game.load.image("star", "star.png");
+		game.load.image("portal", "portal.png");
 	},
 	
 	create: function()
@@ -33,24 +32,26 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		level.addTilesetImage("tiles", "tiles");
 		level.setCollision(1);
 		
-		layer = level.createLayer("FirstLayer");
-		layer.resizeWorld();
+		tiles = level.createLayer("Tiles");
+		tiles.resizeWorld();
 		
-		game.camera.x = (ROOM_WIDTH * cx) * TILE_SIZE;
-		game.camera.y = (ROOM_HEIGHT * cy) * TILE_SIZE;
+		portals = game.add.group()
+		level.createFromObjects("portals!", "Portals", "portal", null, null, null, portals);
 		
 		player = game.add.sprite(TILE_SIZE*3, TILE_SIZE*(level.height-3), "player");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
 		
-		stars = game.add.group();
+		game.camera.follow(player);
+		
+		/*stars = game.add.group();
 		stars.enableBody = true;
 		for(var i = 0; i < 60; i += 2)
 		{
 			var star = stars.create(i * TILE_SIZE, TILE_SIZE*(level.height - 8), "star");
 			star.body.gravity.y = 1;
 			star.body.bounce.y = 0.7 + Math.random() * 0.2;
-		}
+		}*/
 		
 		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#000"});
 		overhead.fixedToCamera = true;
@@ -60,8 +61,8 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	
 	update: function()
 	{
-		game.physics.arcade.collide(player, layer);
-		game.physics.arcade.collide(stars, layer);
+		game.physics.arcade.collide(player, tiles);
+		game.physics.arcade.collide(stars, tiles);
 		game.physics.arcade.overlap(player, stars, function(player, star)
 		{
 			star.kill();
@@ -73,15 +74,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		else if(cursors.right.isDown)
 			player.body.velocity.x = 150;
 		else player.body.velocity.x = 0;
-		
-		if(player.body.x < (ROOM_WIDTH * (cx)) * TILE_SIZE)
-			game.camera.x = ROOM_WIDTH * --cx * TILE_SIZE;
-		else if(player.body.x > (ROOM_WIDTH * (cx + 1)) * TILE_SIZE)
-			game.camera.x = ROOM_WIDTH * ++cx * TILE_SIZE;
-		if(player.body.y < (ROOM_HEIGHT * (cy)) * TILE_SIZE)
-			game.camera.y = ROOM_HEIGHT * --cy * TILE_SIZE;
-		else if(player.body.y > (ROOM_HEIGHT * (cy + 1)) * TILE_SIZE)
-			game.camera.y = ROOM_HEIGHT * ++cy * TILE_SIZE;
 		
 		if(cursors.up.isDown && jumpstate.height < 8)
 		{
