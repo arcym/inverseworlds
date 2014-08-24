@@ -1,0 +1,35 @@
+body
+{
+	margin: 1rem;
+	font-family: arial, sans-serif;
+}
+
+div
+{
+	width: 320px;
+	margin: auto;
+}
+
+h1
+{
+	margin: 1rem auto;
+	text-align: center;
+}
+
+img
+{
+	width: 100%;
+}
+
+p
+{
+	margin: 1rem auto;
+	text-indent: 3rem;
+	text-align: justify;
+}
+
+a.centered
+{
+	display: block;
+	text-align: center;
+}
