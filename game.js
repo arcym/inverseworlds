@@ -102,6 +102,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		else
 		{
 			player.body.allowGravity = true;
+			cursors.up.isDown = false;
 			
 			if(jumpstate.again)
 			{
@@ -128,12 +129,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			player.body.y = portal.ty * 32;
 			
 			level.setCollision(1, false);
-			level.setCollision(2, false);
+			level.setCollision(2, true);
 		});
 		
-		overhead.text = jumpstate.height;
-		overhead.text = player.body.velocity.y.toFixed(2);
-		overhead.text = jumpstate.again;
 		overhead.text = ((score / maxscore) * 100).toFixed(0) + "% completed";
 		if(score == maxscore) {overhead.text = "You win!!";}
 	}
