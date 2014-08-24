@@ -9,6 +9,8 @@ var jumpstate = {
 	again: true
 };
 
+var toggle = false;
+
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
 	preload: function()
@@ -30,7 +32,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		level = game.add.tilemap("level");
 		level.addTilesetImage("tiles", "tiles");
-		level.setCollision(1, true);
+		level.setCollision(1);
 		
 		tiles = level.createLayer("Tiles");
 		tiles.resizeWorld();
@@ -47,7 +49,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			portal.y += 16;
 		});
 		
-		player = game.add.sprite(TILE_SIZE*3, TILE_SIZE*(level.height-3), "player");
+		player = game.add.sprite(TILE_SIZE*4, TILE_SIZE*(level.height-3), "player");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
 		
@@ -63,11 +65,13 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			star.anchor.y = 0.5;
 			star.x += 16;
 			star.y += 16;
+			star.angle -= Math.random() * 180;
 		});
 		maxscore = stars.length;
 		
 		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#FFC90E"});
 		overhead.fixedToCamera = true;
+		overhead.strokeThickness = 3;
 		
 		cursors = game.input.keyboard.createCursorKeys();
 	},
@@ -87,9 +91,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		
 		if(cursors.left.isDown)
-			player.body.velocity.x = -150;
+			player.body.velocity.x = -150 * 2;
 		else if(cursors.right.isDown)
-			player.body.velocity.x = 150;
+			player.body.velocity.x = 150 * 2;
 		else player.body.velocity.x = 0;
 		
 		if(cursors.up.isDown && jumpstate.height < 8)
@@ -125,11 +129,14 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		game.physics.arcade.overlap(player, portals, function(player, portal)
 		{
-			player.body.x = portal.tx * 32;
-			player.body.y = portal.ty * 32;
+			player.body.x = portal.tx;
+			player.body.y = portal.ty;
+			console.log(portal.tx, portal.ty);
 			
-			level.setCollision(1, false);
-			level.setCollision(2, true);
+			toggle = !toggle;
+			
+			level.setCollision(1, !toggle);
+			level.setCollision(2, toggle);
 		});
 		
 		overhead.text = ((score / maxscore) * 100).toFixed(0) + "% completed";
