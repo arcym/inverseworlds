@@ -1,0 +1,5 @@
+use tilemap.createFromObjects() to populate the world with stars
+use group.length after loading to get max-stars-to-collect
+add another layer of spike sprites for killing the player
+add another layer of save points for respawning
+do the negative space thing
