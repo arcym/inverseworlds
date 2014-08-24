@@ -91,9 +91,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		
 		if(cursors.left.isDown)
-			player.body.velocity.x = -150 * 2;
+			player.body.velocity.x = -150;
 		else if(cursors.right.isDown)
-			player.body.velocity.x = 150 * 2;
+			player.body.velocity.x = 150;
 		else player.body.velocity.x = 0;
 		
 		if(cursors.up.isDown && jumpstate.height < 8)

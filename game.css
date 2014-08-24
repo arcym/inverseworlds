@@ -5,7 +5,12 @@ body
 
 canvas
 {
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
 	width: 100%;
 	margin: auto;
 	max-width: 640px;
+	position: absolute;
 }
