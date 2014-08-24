@@ -35,8 +35,16 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		tiles = level.createLayer("Tiles");
 		tiles.resizeWorld();
 		
-		portals = game.add.group()
-		level.createFromObjects("portals!", "Portals", "portal", null, null, null, portals);
+		portals = game.add.group();
+		portals.enableBody = true;
+		portals.immovable = true;
+		level.createFromObjects("Portals", 3, "portal", 0, true, false, portals);
+		portals.forEach(function(portal)
+		{
+			portal.body.allowGravity = false;
+			portal.anchor.x = 0.5;
+			portal.anchor.y = 0.5;
+		});
 		
 		player = game.add.sprite(TILE_SIZE*3, TILE_SIZE*(level.height-3), "player");
 		game.physics.enable(player);
@@ -67,6 +75,16 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		{
 			star.kill();
 			score += 10;
+		});
+		game.physics.arcade.overlap(player, portals, function(player, portal)
+		{
+			console.log(portal.tx);
+			portal.kill();
+		});
+		
+		portals.forEachAlive(function(portal)
+		{
+			portal.angle += 7;
 		});
 		
 		if(cursors.left.isDown)
