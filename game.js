@@ -1,4 +1,6 @@
 var WIDTH = 640, HEIGHT = 480;
+var ROOM_WIDTH = 20, ROOM_HEIGHT = 15;
+var TILE_SIZE = 32;
 
 var level, layer, player, stars, cursors, overhead, score = 0;
 
@@ -34,10 +36,10 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		layer = level.createLayer("FirstLayer");
 		layer.resizeWorld();
 		
-		game.camera.x = (20 * cx) * 32;
-		game.camera.y = (15 * cy) * 32;
+		game.camera.x = (ROOM_WIDTH * cx) * TILE_SIZE;
+		game.camera.y = (ROOM_HEIGHT * cy) * TILE_SIZE;
 		
-		player = game.add.sprite(32*3, 32*(level.height-3), "player");
+		player = game.add.sprite(TILE_SIZE*3, TILE_SIZE*(level.height-3), "player");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
 		
@@ -45,7 +47,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		stars.enableBody = true;
 		for(var i = 0; i < 60; i += 2)
 		{
-			var star = stars.create(i * 32, 32*(level.height - 8), "star");
+			var star = stars.create(i * TILE_SIZE, TILE_SIZE*(level.height - 8), "star");
 			star.body.gravity.y = 1;
 			star.body.bounce.y = 0.7 + Math.random() * 0.2;
 		}
@@ -67,17 +69,19 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		
 		if(cursors.left.isDown)
-		{
 			player.body.velocity.x = -150;
-		}
 		else if(cursors.right.isDown)
-		{
 			player.body.velocity.x = 150;
-		}
-		else
-		{
-			player.body.velocity.x = 0;
-		}
+		else player.body.velocity.x = 0;
+		
+		if(player.body.x < (ROOM_WIDTH * (cx)) * TILE_SIZE)
+			game.camera.x = ROOM_WIDTH * --cx * TILE_SIZE;
+		else if(player.body.x > (ROOM_WIDTH * (cx + 1)) * TILE_SIZE)
+			game.camera.x = ROOM_WIDTH * ++cx * TILE_SIZE;
+		if(player.body.y < (ROOM_HEIGHT * (cy)) * TILE_SIZE)
+			game.camera.y = ROOM_HEIGHT * --cy * TILE_SIZE;
+		else if(player.body.y > (ROOM_HEIGHT * (cy + 1)) * TILE_SIZE)
+			game.camera.y = ROOM_HEIGHT * ++cy * TILE_SIZE;
 		
 		if(cursors.up.isDown && jumpstate.height < 8)
 		{
