@@ -30,7 +30,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		level = game.add.tilemap("level");
 		level.addTilesetImage("tiles", "tiles");
-		level.setCollision(1);
+		level.setCollision(1, true);
 		
 		tiles = level.createLayer("Tiles");
 		tiles.resizeWorld();
@@ -43,6 +43,8 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			portal.body.allowGravity = false;
 			portal.anchor.x = 0.5;
 			portal.anchor.y = 0.5;
+			portal.x += 16;
+			portal.y += 16;
 		});
 		
 		player = game.add.sprite(TILE_SIZE*3, TILE_SIZE*(level.height-3), "player");
@@ -56,8 +58,11 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		level.createFromObjects("Stars", 4, "star", 0, true, false, stars);
 		stars.forEach(function(star)
 		{
-			star.body.gravity.y = 1.2;
-			star.body.bounce.y = 0.8 + Math.random() * 0.2;
+			star.body.allowGravity = false;
+			star.anchor.x = 0.5;
+			star.anchor.y = 0.5;
+			star.x += 16;
+			star.y += 16;
 		});
 		
 		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#000"});
@@ -69,21 +74,15 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	update: function()
 	{
 		game.physics.arcade.collide(player, tiles);
-		game.physics.arcade.collide(stars, tiles);
-		game.physics.arcade.overlap(player, stars, function(player, star)
-		{
-			star.kill();
-			score += 10;
-		});
-		game.physics.arcade.overlap(player, portals, function(player, portal)
-		{
-			console.log(portal.tx);
-			portal.kill();
-		});
 		
 		portals.forEachAlive(function(portal)
 		{
 			portal.angle += 7;
+		});
+		
+		stars.forEachAlive(function(star)
+		{
+			star.angle -= 1;
 		});
 		
 		if(cursors.left.isDown)
@@ -115,6 +114,22 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			jumpstate.height = 0;
 			jumpstate.again = true;
 		}
+		
+		game.physics.arcade.overlap(player, stars, function(player, star)
+		{
+			console.log("!");
+			star.kill();
+			score += 10;
+		});
+		
+		game.physics.arcade.overlap(player, portals, function(player, portal)
+		{
+			player.body.x = portal.tx * 32;
+			player.body.y = portal.ty * 32;
+			
+			level.setCollision(1, false);
+			level.setCollision(2, true);
+		});
 		
 		overhead.text = jumpstate.height;
 		overhead.text = player.body.velocity.y.toFixed(2);
