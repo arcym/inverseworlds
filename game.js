@@ -2,7 +2,7 @@ var WIDTH = 640, HEIGHT = 480;
 var ROOM_WIDTH = 20, ROOM_HEIGHT = 15;
 var TILE_SIZE = 32;
 
-var level, tiles, player, stars, cursors, overhead, score = 0, portals;
+var level, tiles, player, stars, cursors, overhead, victory, score = 0, maxscore = 0, portals;
 
 var jumpstate = {
 	height: 0,
@@ -64,8 +64,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			star.x += 16;
 			star.y += 16;
 		});
+		maxscore = stars.length;
 		
-		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#000"});
+		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#FFC90E"});
 		overhead.fixedToCamera = true;
 		
 		cursors = game.input.keyboard.createCursorKeys();
@@ -117,9 +118,8 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		game.physics.arcade.overlap(player, stars, function(player, star)
 		{
-			console.log("!");
 			star.kill();
-			score += 10;
+			score += 1;
 		});
 		
 		game.physics.arcade.overlap(player, portals, function(player, portal)
@@ -128,11 +128,13 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			player.body.y = portal.ty * 32;
 			
 			level.setCollision(1, false);
-			level.setCollision(2, true);
+			level.setCollision(2, false);
 		});
 		
 		overhead.text = jumpstate.height;
 		overhead.text = player.body.velocity.y.toFixed(2);
 		overhead.text = jumpstate.again;
+		overhead.text = ((score / maxscore) * 100).toFixed(0) + "% completed";
+		if(score == maxscore) {overhead.text = "You win!!";}
 	}
 });
