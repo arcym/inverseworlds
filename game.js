@@ -37,7 +37,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		portals = game.add.group();
 		portals.enableBody = true;
-		portals.immovable = true;
 		level.createFromObjects("Portals", 3, "portal", 0, true, false, portals);
 		portals.forEach(function(portal)
 		{
@@ -52,14 +51,14 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		game.camera.follow(player);
 		
-		/*stars = game.add.group();
+		stars = game.add.group();
 		stars.enableBody = true;
-		for(var i = 0; i < 60; i += 2)
+		level.createFromObjects("Stars", 4, "star", 0, true, false, stars);
+		stars.forEach(function(star)
 		{
-			var star = stars.create(i * TILE_SIZE, TILE_SIZE*(level.height - 8), "star");
-			star.body.gravity.y = 1;
-			star.body.bounce.y = 0.7 + Math.random() * 0.2;
-		}*/
+			star.body.gravity.y = 1.2;
+			star.body.bounce.y = 0.8 + Math.random() * 0.2;
+		});
 		
 		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#000"});
 		overhead.fixedToCamera = true;
