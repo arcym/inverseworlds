@@ -1,2 +1,0 @@
-add another layer of spike sprites for killing the player
-add another layer of save points for respawning

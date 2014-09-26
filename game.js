@@ -24,11 +24,11 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	
 	create: function()
 	{
+		game.stage.backgroundColor = "#787878";
+		
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 		game.physics.arcade.gravity.y = 800;
 		game.physics.arcade.TILE_BIAS = 27;
-		
-		game.stage.backgroundColor = "#787878";
 		
 		level = game.add.tilemap("level");
 		level.addTilesetImage("tiles", "tiles");

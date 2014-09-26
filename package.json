@@ -1,0 +1,9 @@
+{
+	"name": "inverse-worlds",
+	"main": "game.html",
+	"window": {
+		"width": 1280,
+		"height": 960,
+		"toolbar": false
+	}
+}

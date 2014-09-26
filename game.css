@@ -9,8 +9,24 @@ canvas
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	width: 100%;
 	margin: auto;
-	max-width: 640px;
 	position: absolute;
+}
+
+@media(min-aspect-ratio: 4/3)
+{
+	canvas
+	{
+		height: 100vh;
+		width: 133.33vh;
+	}
+}
+
+@media(max-aspect-ratio: 4/3)
+{
+	canvas
+	{
+		width: 100vw;
+		height: 75vw;
+	}
 }
