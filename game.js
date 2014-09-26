@@ -141,5 +141,10 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		overhead.text = ((score / maxscore) * 100).toFixed(0) + "% completed";
 		if(score == maxscore) {overhead.text = "You win!!";}
+		
+		if(game.input.keyboard.isDown(Phaser.Keyboard.ESC))
+		{
+			require("nw.gui").App.quit();
+		}
 	}
 });

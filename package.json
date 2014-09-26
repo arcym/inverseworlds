@@ -2,8 +2,9 @@
 	"name": "inverse-worlds",
 	"main": "game.html",
 	"window": {
-		"width": 1280,
-		"height": 960,
-		"toolbar": false
+		"width": 640,
+		"height": 480,
+		"toolbar": false,
+		"fullscreen": true
 	}
 }
