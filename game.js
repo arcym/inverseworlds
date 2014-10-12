@@ -14,7 +14,8 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	{
 		game.load.tilemap("level", "./level.json", null, Phaser.Tilemap.TILED_JSON);
 		
-		game.load.image("tiles", "./tiles.png");
+		game.load.image("white-world-tiles", "./white-world-tiles.png");
+		game.load.image("black-world-tiles", "./black-world-tiles.png");
 		game.load.image("player", "./player.png");
 		game.load.image("star", "./star.png");
 		game.load.image("portal", "./portal.png");
@@ -29,7 +30,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		game.physics.arcade.TILE_BIAS = 27;
 		
 		level = game.add.tilemap("level");
-		level.addTilesetImage("tiles", "tiles");
+		level.addTilesetImage("tiles", "white-world-tiles");
 		level.setCollision(1);
 		
 		tiles = level.createLayer("Tiles");
@@ -132,9 +133,17 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		{
 			player.body.x = portal.tx;
 			player.body.y = portal.ty;
-			console.log(portal.tx, portal.ty);
 			
 			toggle = !toggle;
+			
+			if(toggle)
+			{
+				level.addTilesetImage("tiles", "black-world-tiles");
+			}
+			else
+			{
+				level.addTilesetImage("tiles", "white-world-tiles");
+			}
 			
 			level.setCollision(1, !toggle);
 			level.setCollision(2, toggle);
