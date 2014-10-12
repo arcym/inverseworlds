@@ -16,7 +16,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		game.load.image("images/tiles.white.png", "images/tiles.white.png");
 		game.load.image("images/tiles.black.png", "images/tiles.black.png");
-		
 		game.load.image("images/player.png", "images/player.png");
 		game.load.image("images/portal.png", "images/portal.png");
 		game.load.image("images/star.png", "images/star.png");
@@ -27,22 +26,20 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 	
 	create: function()
 	{
-		game.stage.backgroundColor = "#787878";
-		
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 		game.physics.arcade.gravity.y = 800;
 		game.physics.arcade.TILE_BIAS = 27;
 		
 		level = game.add.tilemap("level");
 		level.addTilesetImage("tileset", "images/tiles.white.png");
-		level.setCollision(1);
+		level.setCollision(1, true);
 		
-		tiles = level.createLayer("Tiles");
+		tiles = level.createLayer("tiles");
 		tiles.resizeWorld();
 		
 		portals = game.add.group();
 		portals.enableBody = true;
-		level.createFromObjects("Portals", 3, "images/portal.png", 0, true, false, portals);
+		level.createFromObjects("portals", 3, "images/portal.png", 0, true, false, portals);
 		portals.forEach(function(portal)
 		{
 			portal.body.allowGravity = false;
@@ -52,18 +49,14 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			portal.y += 16;
 		});
 		
-		//b2w_sound = game.add.audio("portal.black2white", 0.25);
-		//w2b_sound = game.add.audio("portal.white2black", 0.25);
-		
 		player = game.add.sprite(TILE_SIZE*4, TILE_SIZE*(level.height-3), "images/player.png");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
-		
 		game.camera.follow(player);
 		
 		stars = game.add.group();
 		stars.enableBody = true;
-		level.createFromObjects("Stars", 4, "images/star.png", 0, true, false, stars);
+		level.createFromObjects("stars", 4, "images/star.png", 0, true, false, stars);
 		stars.forEach(function(star)
 		{
 			star.body.allowGravity = false;
@@ -75,7 +68,9 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		maxscore = stars.length;
 		
-		/*for(var i = 1; i <= 8; i++)
+		/*b2w_sound = game.add.audio("portal.black2white", 0.25);
+		w2b_sound = game.add.audio("portal.white2black", 0.25);
+		for(var i = 1; i <= 8; i++)
 		{
 			sounds.push(game.add.audio("coin-" + i, 0.1));
 		}*/
