@@ -1,25 +1,23 @@
-var WIDTH = 640, HEIGHT = 480;
-var ROOM_WIDTH = 20, ROOM_HEIGHT = 15;
 var TILE_SIZE = 32;
-
 var level, tiles, player, stars, cursors, overhead, victory, score = 0, maxscore = 0, portals;
-
 var jumpstate = {
 	height: 0,
 	again: true
 };
-
 var toggle = false;
+
+var WIDTH = 640, HEIGHT = 480;
 
 var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
 	preload: function()
 	{
-		game.load.tilemap("level", "level.json", null, Phaser.Tilemap.TILED_JSON);
-		game.load.image("tiles", "tiles.png");
-		game.load.image("player", "player.png");
-		game.load.image("star", "star.png");
-		game.load.image("portal", "portal.png");
+		game.load.tilemap("level", "./level.json", null, Phaser.Tilemap.TILED_JSON);
+		
+		game.load.image("tiles", "./tiles.png");
+		game.load.image("player", "./player.png");
+		game.load.image("star", "./star.png");
+		game.load.image("portal", "./portal.png");
 	},
 	
 	create: function()
@@ -69,9 +67,12 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		maxscore = stars.length;
 		
-		overhead = game.add.text(16, 16, "0", {fontSize: "32px", fill: "#FFC90E"});
+		overhead = game.add.text(20, 12, "0", {fill: "#FFC90E"});
+		overhead.font = "goldfish";
+		overhead.fontSize = "32px";
+		overhead.fontWeight = "bold";
+		overhead.strokeThickness = 5;
 		overhead.fixedToCamera = true;
-		overhead.strokeThickness = 3;
 		
 		cursors = game.input.keyboard.createCursorKeys();
 	},

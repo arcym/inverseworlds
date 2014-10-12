@@ -25,3 +25,16 @@ canvas
 		height: 75vw;
 	}
 }
+
+
+
+#game
+{
+	font-family: goldfish;
+}
+
+@font-face
+{
+	font-family: goldfish;
+	src: url("./goldfish.ttf") format("truetype");
+}
