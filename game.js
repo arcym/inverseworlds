@@ -5,6 +5,7 @@ var jumpstate = {
 	again: true
 };
 var toggle = false;
+var sounds = [];
 
 var WIDTH = 640, HEIGHT = 480;
 
@@ -19,6 +20,12 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		game.load.image("player", "./player.png");
 		game.load.image("star", "./star.png");
 		game.load.image("portal", "./portal.png");
+		
+		for(var i = 1; i <= 8; i++)
+		{
+			var name = "coin-" + i;
+			game.load.audio(name, "./sounds/" + name + ".wav");
+		}
 	},
 	
 	create: function()
@@ -67,6 +74,11 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			star.angle -= Math.random() * 180;
 		});
 		maxscore = stars.length;
+		
+		for(var i = 1; i <= 8; i++)
+		{
+			sounds.push(game.add.audio("coin-" + i));
+		}
 		
 		overhead = game.add.text(20, 12, "0", {fill: "#FFC90E"});
 		overhead.font = "goldfish";
@@ -127,6 +139,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		{
 			star.kill();
 			score += 1;
+			sounds[Math.floor(Math.random() * sounds.length)].play();
 		});
 		
 		game.physics.arcade.overlap(player, portals, function(player, portal)
