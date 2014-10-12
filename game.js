@@ -5,8 +5,6 @@ var jumpstate = {
 	again: true
 };
 var toggle = false;
-var sounds = [];
-var b2w_sound, w2b_sound;
 
 var WIDTH = 640, HEIGHT = 480;
 
@@ -14,21 +12,17 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 {
 	preload: function()
 	{
-		game.load.tilemap("level", "./level.json", null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap("level", "level.json", null, Phaser.Tilemap.TILED_JSON);
 		
-		game.load.image("white-world-tiles", "./white-world-tiles.png");
-		game.load.image("black-world-tiles", "./black-world-tiles.png");
-		game.load.image("player", "./player.png");
-		game.load.image("star", "./star.png");
-		game.load.image("portal", "./portal.png");
+		game.load.image("images/tiles.white.png", "images/tiles.white.png");
+		game.load.image("images/tiles.black.png", "images/tiles.black.png");
 		
-		for(var i = 1; i <= 8; i++)
-		{
-			game.load.audio("coin-" + i, "./sounds/coin-" + i + ".wav");
-		}
+		game.load.image("images/player.png", "images/player.png");
+		game.load.image("images/portal.png", "images/portal.png");
+		game.load.image("images/star.png", "images/star.png");
 		
-		game.load.audio("portal.black2white", "./sounds/portal.black2white.wav");
-		game.load.audio("portal.white2black", "./sounds/portal.white2black.wav");
+		game.load.audio("audio/portal.black2white.wav", "audio/portal.black2white.wav");
+		game.load.audio("audio/portal.white2black.wav", "audio/portal.white2black.wav");
 	},
 	
 	create: function()
@@ -40,7 +34,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		game.physics.arcade.TILE_BIAS = 27;
 		
 		level = game.add.tilemap("level");
-		level.addTilesetImage("tiles", "white-world-tiles");
+		level.addTilesetImage("tileset", "images/tiles.white.png");
 		level.setCollision(1);
 		
 		tiles = level.createLayer("Tiles");
@@ -48,7 +42,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		portals = game.add.group();
 		portals.enableBody = true;
-		level.createFromObjects("Portals", 3, "portal", 0, true, false, portals);
+		level.createFromObjects("Portals", 3, "images/portal.png", 0, true, false, portals);
 		portals.forEach(function(portal)
 		{
 			portal.body.allowGravity = false;
@@ -58,10 +52,10 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			portal.y += 16;
 		});
 		
-		b2w_sound = game.add.audio("portal.black2white");
-		w2b_sound = game.add.audio("portal.white2black");
+		//b2w_sound = game.add.audio("portal.black2white", 0.25);
+		//w2b_sound = game.add.audio("portal.white2black", 0.25);
 		
-		player = game.add.sprite(TILE_SIZE*4, TILE_SIZE*(level.height-3), "player");
+		player = game.add.sprite(TILE_SIZE*4, TILE_SIZE*(level.height-3), "images/player.png");
 		game.physics.enable(player);
 		player.body.collideWorldBounds = true;
 		
@@ -69,7 +63,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		
 		stars = game.add.group();
 		stars.enableBody = true;
-		level.createFromObjects("Stars", 4, "star", 0, true, false, stars);
+		level.createFromObjects("Stars", 4, "images/star.png", 0, true, false, stars);
 		stars.forEach(function(star)
 		{
 			star.body.allowGravity = false;
@@ -81,10 +75,10 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		});
 		maxscore = stars.length;
 		
-		for(var i = 1; i <= 8; i++)
+		/*for(var i = 1; i <= 8; i++)
 		{
-			sounds.push(game.add.audio("coin-" + i));
-		}
+			sounds.push(game.add.audio("coin-" + i, 0.1));
+		}*/
 		
 		overhead = game.add.text(20, 12, "0", {fill: "#FFC90E"});
 		overhead.font = "goldfish";
@@ -145,7 +139,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 		{
 			star.kill();
 			score += 1;
-			sounds[Math.floor(Math.random() * sounds.length)].play();
+			//sounds[Math.floor(Math.random() * sounds.length)].play();
 		});
 		
 		game.physics.arcade.overlap(player, portals, function(player, portal)
@@ -157,13 +151,13 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			
 			if(toggle)
 			{
-				level.addTilesetImage("tiles", "black-world-tiles");
-				w2b_sound.play();
+				level.addTilesetImage("tileset", "images/black.white.png");
+				//w2b_sound.play();
 			}
 			else
 			{
-				level.addTilesetImage("tiles", "white-world-tiles");
-				b2w_sound.play();
+				level.addTilesetImage("tileset", "images/tiles.white.png");
+				//b2w_sound.play();
 			}
 			
 			level.setCollision(1, !toggle);

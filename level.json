@@ -639,7 +639,7 @@
          "imageheight":32,
          "imagewidth":64,
          "margin":0,
-         "name":"tiles",
+         "name":"tileset",
          "properties":
             {
 
