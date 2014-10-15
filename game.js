@@ -5,10 +5,41 @@ var jumpstate = {
 	again: true
 };
 var toggle = false;
+var title;
 
 var WIDTH = 640, HEIGHT = 480;
 
-var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
+var TitleState =
+{
+	preload: function()
+	{
+		game.load.tilemap("level", "title.json", null, Phaser.Tilemap.TILED_JSON);
+		
+		game.load.image("images/tiles.white.png", "images/tiles.white.png");
+		game.load.image("images/tiles.black.png", "images/tiles.black.png");
+		game.load.image("images/player.png", "images/player.png");
+		game.load.image("images/portal.png", "images/portal.png");
+	},
+	
+	create: function()
+	{
+		level = game.add.tilemap("level");
+		level.addTilesetImage("tileset", "images/tiles.white.png");
+		tiles = level.createLayer("tiles");
+		tiles.resizeWorld();
+		
+		title = game.add.text(WIDTH/2, HEIGHT/3, "0", {fill: "#FFC90E"});
+		title.font = "goldfish";
+		title.fontSize = "32px";
+		title.fontWeight = "bold";
+		title.strokeThickness = 5;
+		title.text = "Inverse Worlds";
+		title.anchor.x = 0.5;
+		title.anchor.y = 0.5;
+	}
+}
+
+var GameState = 
 {
 	preload: function()
 	{
@@ -75,7 +106,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			sounds.push(game.add.audio("coin-" + i, 0.1));
 		}*/
 		
-		overhead = game.add.text(20, 12, "0", {fill: "#FFC90E"});
+		overhead = game.add.text(14, 12, "0", {fill: "#FFC90E"});
 		overhead.font = "goldfish";
 		overhead.fontSize = "32px";
 		overhead.fontWeight = "bold";
@@ -146,7 +177,7 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			
 			if(toggle)
 			{
-				level.addTilesetImage("tileset", "images/black.white.png");
+				level.addTilesetImage("tileset", "images/tiles.black.png");
 				//w2b_sound.play();
 			}
 			else
@@ -167,4 +198,6 @@ var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game",
 			require("nw.gui").App.quit();
 		}
 	}
-});
+};
+
+var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game", TitleState);
