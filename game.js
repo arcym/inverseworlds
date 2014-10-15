@@ -5,9 +5,9 @@ var jumpstate = {
 	again: true
 };
 var toggle = false;
-var title;
 
 var WIDTH = 640, HEIGHT = 480;
+var title, title_goal = (HEIGHT/3)+20;
 
 var TitleState =
 {
@@ -36,6 +36,21 @@ var TitleState =
 		title.text = "Inverse Worlds";
 		title.anchor.x = 0.5;
 		title.anchor.y = 0.5;
+	},
+	
+	update: function()
+	{
+		title.y = title.y + (0.05 * (title_goal - title.y));
+		
+		if(title.y > title_goal - 1)
+		{
+			title_goal = (HEIGHT/3);
+		}
+		
+		if(title.y < title_goal + 1)
+		{
+			title_goal = (HEIGHT/3) + 30;
+		}
 	}
 }
 
