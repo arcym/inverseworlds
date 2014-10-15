@@ -7,7 +7,7 @@ var jumpstate = {
 var toggle = false;
 
 var WIDTH = 640, HEIGHT = 480;
-var title, title_goal = (HEIGHT/3)+20;
+var title, title_goal = (HEIGHT/3);
 
 var TitleState =
 {
@@ -23,10 +23,20 @@ var TitleState =
 	
 	create: function()
 	{
+		game.physics.startSystem(Phaser.Physics.ARCADE);
+		game.physics.arcade.gravity.y = 800;
+		game.physics.arcade.TILE_BIAS = 27;
+		
 		level = game.add.tilemap("level");
 		level.addTilesetImage("tileset", "images/tiles.white.png");
+		level.setCollision(1, true);
 		tiles = level.createLayer("tiles");
 		tiles.resizeWorld();
+		
+		player = game.add.sprite(WIDTH/2, HEIGHT/2, "images/player.png");
+		game.physics.enable(player);
+		player.body.collideWorldBounds = true;
+		game.camera.follow(player);
 		
 		title = game.add.text(WIDTH/2, HEIGHT/3, "0", {fill: "#FFC90E"});
 		title.font = "goldfish";
@@ -36,20 +46,47 @@ var TitleState =
 		title.text = "Inverse Worlds";
 		title.anchor.x = 0.5;
 		title.anchor.y = 0.5;
+		
+		cursors = game.input.keyboard.createCursorKeys();
 	},
 	
 	update: function()
 	{
 		title.y = title.y + (0.05 * (title_goal - title.y));
+		if(title.y > title_goal - 1) {title_goal = (HEIGHT/3) - 30;}
+		if(title.y < title_goal + 1) {title_goal = (HEIGHT/3);}
 		
-		if(title.y > title_goal - 1)
+		game.physics.arcade.collide(player, tiles);
+		
+		if(cursors.left.isDown)
+			player.body.velocity.x = -150;
+		else if(cursors.right.isDown)
+			player.body.velocity.x = 150;
+		else player.body.velocity.x = 0;
+		
+		if(cursors.up.isDown && jumpstate.height < 8)
 		{
-			title_goal = (HEIGHT/3);
+			player.body.allowGravity = false;
+			player.body.velocity.y = 320 * -1;
+			
+			jumpstate.height += 1;
+		}
+		else
+		{
+			player.body.allowGravity = true;
+			cursors.up.isDown = false;
+			
+			if(jumpstate.again)
+			{
+				jumpstate.height = 0;
+				jumpstate.again = false;
+			}
 		}
 		
-		if(title.y < title_goal + 1)
+		if(player.body.onFloor())
 		{
-			title_goal = (HEIGHT/3) + 30;
+			jumpstate.height = 0;
+			jumpstate.again = true;
 		}
 	}
 }
