@@ -1,23 +1,20 @@
 var TILE_SIZE = 32;
-var level, tiles, player, stars, cursors, overhead, victory, score = 0, maxscore = 0, portals;
-var jumpstate = {
-	height: 0,
-	again: true
-};
+var level, tiles, stars, cursors, overhead, victory, score = 0, maxscore = 0, portals;
 var toggle = false;
-
-var WIDTH = 640, HEIGHT = 480;
 var title, title_goal = (HEIGHT/3);
+
+var player = new Player();
+var WIDTH = 640, HEIGHT = 480;
 
 var GameState = 
 {
 	preload: function()
 	{
+		player.preload();
 		game.load.tilemap("level", "level.json", null, Phaser.Tilemap.TILED_JSON);
 		
 		game.load.image("images/tiles.white.png", "images/tiles.white.png");
 		game.load.image("images/tiles.black.png", "images/tiles.black.png");
-		game.load.image("images/player.png", "images/player.png");
 		game.load.image("images/portal.png", "images/portal.png");
 		game.load.image("images/star.png", "images/star.png");
 		
@@ -50,10 +47,7 @@ var GameState =
 			portal.y += 16;
 		});
 		
-		player = game.add.sprite(TILE_SIZE*4, TILE_SIZE*(level.height-3), "images/player.png");
-		game.physics.enable(player);
-		player.body.collideWorldBounds = true;
-		game.camera.follow(player);
+		player.create();
 		
 		stars = game.add.group();
 		stars.enableBody = true;
@@ -82,13 +76,13 @@ var GameState =
 		overhead.fontWeight = "bold";
 		overhead.strokeThickness = 5;
 		overhead.fixedToCamera = true;
-		
-		cursors = game.input.keyboard.createCursorKeys();
 	},
 	
 	update: function()
 	{
-		game.physics.arcade.collide(player, tiles);
+		game.physics.arcade.collide(player.sprite, tiles);
+		
+		player.update();
 		
 		portals.forEachAlive(function(portal)
 		{
@@ -100,45 +94,14 @@ var GameState =
 			star.angle -= 1;
 		});
 		
-		if(cursors.left.isDown)
-			player.body.velocity.x = -150;
-		else if(cursors.right.isDown)
-			player.body.velocity.x = 150;
-		else player.body.velocity.x = 0;
-		
-		if(cursors.up.isDown && jumpstate.height < 8)
-		{
-			player.body.allowGravity = false;
-			player.body.velocity.y = 320 * -1;
-			
-			jumpstate.height += 1;
-		}
-		else
-		{
-			player.body.allowGravity = true;
-			cursors.up.isDown = false;
-			
-			if(jumpstate.again)
-			{
-				jumpstate.height = 0;
-				jumpstate.again = false;
-			}
-		}
-		
-		if(player.body.onFloor())
-		{
-			jumpstate.height = 0;
-			jumpstate.again = true;
-		}
-		
-		game.physics.arcade.overlap(player, stars, function(player, star)
+		game.physics.arcade.overlap(player.sprite, stars, function(player, star)
 		{
 			star.kill();
 			score += 1;
 			//sounds[Math.floor(Math.random() * sounds.length)].play();
 		});
 		
-		game.physics.arcade.overlap(player, portals, function(player, portal)
+		game.physics.arcade.overlap(player.sprite, portals, function(player, portal)
 		{
 			player.body.x = portal.tx;
 			player.body.y = portal.ty;
@@ -170,4 +133,4 @@ var GameState =
 	}
 };
 
-var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game", GameState);
+game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game", GameState);
