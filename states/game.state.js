@@ -1,12 +1,3 @@
-var TILE_SIZE = 32;
-var score = 0, maxscore = 0;
-var title, title_goal = (HEIGHT/3);
-
-var level = new Level();
-var player = new Player();
-
-var WIDTH = 640, HEIGHT = 480;
-
 var GameState = 
 {
 	preload: function()
@@ -21,7 +12,7 @@ var GameState =
 	create: function()
 	{
 		game.physics.startSystem(Phaser.Physics.ARCADE);
-		game.physics.arcade.gravity.y = 800;
+		game.physics.arcade.gravity.y = GRAVITY;
 		game.physics.arcade.TILE_BIAS = 27;
 		
 		level.create();
@@ -65,5 +56,3 @@ var GameState =
 		}
 	}
 };
-
-game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, "game", GameState);

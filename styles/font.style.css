@@ -1,0 +1,10 @@
+#game
+{
+	font-family: goldfish;
+}
+
+@font-face
+{
+	font-family: goldfish;
+	src: url("/fonts/goldfish.ttf") format("truetype");
+}
