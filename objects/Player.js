@@ -2,6 +2,7 @@ Player = function()
 {
 	this.sprite = null;
 	this.cursors = null;
+	this.sprite_text = null;
 	
 	this.jump =
 	{
@@ -18,13 +19,18 @@ Player.prototype.preload = function()
 Player.prototype.create = function()
 {
 	this.sprite = game.add.sprite(TILE_SIZE * 4.5, TILE_SIZE * 40, "images/player.png");
-	
 	game.physics.enable(this.sprite);
 	game.camera.follow(this.sprite);
-	
 	this.sprite.body.collideWorldBounds = true;
 	
 	this.cursors = game.input.keyboard.createCursorKeys();
+	
+	this.score_hud = game.add.text(14, 12, "0", {fill: "#FFC90E"});
+	this.score_hud.font = "goldfish";
+	this.score_hud.fontSize = "32px";
+	this.score_hud.fontWeight = "bold";
+	this.score_hud.strokeThickness = 5;
+	this.score_hud.fixedToCamera = true;
 }
 
 Player.prototype.update = function()
@@ -66,4 +72,10 @@ Player.prototype.update = function()
 		this.jump.height = 0;
 		this.jump.again = true;
 	}
+	
+	var score_value = ((score / maxscore) * 100).toFixed(0);
+	this.score_hud.text = score_value + "%";
+	if(score_value > 50) {this.score_hud.text += "!"}
+	if(score_value > 90) {this.score_hud.text += "!"}
+	if(score_value == 100) {this.score_hud.text = "You win!!";}
 }
