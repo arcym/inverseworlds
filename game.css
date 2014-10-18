@@ -36,5 +36,5 @@ canvas
 @font-face
 {
 	font-family: goldfish;
-	src: url("./goldfish.ttf") format("truetype");
+	src: url("./fonts/goldfish.ttf") format("truetype");
 }

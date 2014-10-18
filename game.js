@@ -25,10 +25,9 @@ var GameState =
 		game.physics.arcade.TILE_BIAS = 27;
 		
 		level.create();
+		player.create();
 		
 		maxscore = level.stars.length;
-		
-		player.create();
 	},
 	
 	update: function()

@@ -10,7 +10,7 @@ Level = function()
 
 Level.prototype.preload = function()
 {
-	game.load.tilemap("level.json", "level.json", null, Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap("level.json", "levels/game.level.json", null, Phaser.Tilemap.TILED_JSON);
 	
 	game.load.image("images/tiles.white.png", "images/tiles.white.png");
 	game.load.image("images/tiles.black.png", "images/tiles.black.png");
