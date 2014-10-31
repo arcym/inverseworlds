@@ -1,5 +1,8 @@
 var GameState = 
 {
+	score: 0,
+	maxscore: 0,
+	
 	preload: function()
 	{
 		level.preload();
@@ -18,7 +21,7 @@ var GameState =
 		level.create();
 		player.create();
 		
-		maxscore = level.stars.length;
+		this.maxscore = level.stars.length;
 	},
 	
 	update: function()
@@ -32,7 +35,7 @@ var GameState =
 		game.physics.arcade.overlap(player.sprite, level.stars, function(player, star)
 		{
 			star.kill();
-			score += 1;
+			GameState.score += 1;
 		});
 		
 		game.physics.arcade.overlap(player.sprite, level.portals, function(player_sprite, portal_sprite)

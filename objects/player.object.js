@@ -73,7 +73,7 @@ Player.prototype.update = function()
 		this.jump.again = true;
 	}
 	
-	var score_value = ((score / maxscore) * 100).toFixed(0);
+	var score_value = ((GameState.score / GameState.maxscore) * 100).toFixed(0);
 	this.score_hud.text = score_value + "%";
 	if(score_value > 50) {this.score_hud.text += "!"}
 	if(score_value > 90) {this.score_hud.text += "!"}

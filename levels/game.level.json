@@ -635,7 +635,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"images/tiles.white.png",
+         "image":"../images/tiles.white.png",
          "imageheight":32,
          "imagewidth":64,
          "margin":0,
@@ -650,7 +650,7 @@
         }, 
         {
          "firstgid":3,
-         "image":"images/portal.png",
+         "image":"../images/portal.png",
          "imageheight":32,
          "imagewidth":32,
          "margin":0,
@@ -665,7 +665,7 @@
         }, 
         {
          "firstgid":4,
-         "image":"images/star.png",
+         "image":"../images/star.png",
          "imageheight":32,
          "imagewidth":32,
          "margin":0,

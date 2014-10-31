@@ -1,8 +1,11 @@
 var TitleState =
 {
+	title: null,
+	title_goal: 0,
+	
 	preload: function()
 	{
-		game.load.tilemap("level", "title.json", null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap("level", "levels/title.level.json", null, Phaser.Tilemap.TILED_JSON);
 		
 		game.load.image("images/tiles.white.png", "images/tiles.white.png");
 		game.load.image("images/tiles.black.png", "images/tiles.black.png");
@@ -36,6 +39,8 @@ var TitleState =
 		title.anchor.x = 0.5;
 		title.anchor.y = 0.5;
 		title.alpha = 0;
+		
+		this.title_goal = HEIGHT / 3;
 		
 		cursors = game.input.keyboard.createCursorKeys();
 	},
