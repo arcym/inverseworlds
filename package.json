@@ -1,10 +1,11 @@
 {
-	"name": "inverse-worlds",
-	"main": "game.html",
+	"name": "inverted-worlds",
+	"main": "index.html",
 	"window": {
 		"width": 640,
 		"height": 480,
 		"toolbar": false,
-		"fullscreen": true
+		"fullscreen": true,
+		"icon": "icon.png"
 	}
 }
