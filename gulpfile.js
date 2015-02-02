@@ -5,6 +5,7 @@ var gulp_uglify = require("gulp-uglify")
 var gulp_connect = require("gulp-connect")
 var gulp_minify_css = require("gulp-minify-css")
 var gulp_minify_html = require("gulp-minify-html")
+var gulp_prefixify_css = require("gulp-autoprefixer")
 var gulp_json_transform = require("gulp-json-transform")
 
 var del = require("del")
@@ -19,8 +20,14 @@ var aliasify = require("aliasify")
 var SOURCE_DIRECTORY = "./source"
 var BUILD_DIRECTORY = "./build"
 
-gulp.task("scripts", function()
-{
+gulp.task("markup", function() {
+    gulp.src(SOURCE_DIRECTORY + "/index.html")
+        .pipe(gulp_if(yargs.argv.compiled, gulp_minify_html()))
+        .pipe(gulp.dest(BUILD_DIRECTORY))
+        .pipe(gulp_connect.reload())
+})
+
+gulp.task("scripts", function() {
     browserify(SOURCE_DIRECTORY + "/index.js")
         .transform(aliasify.configure({
             configDir: __dirname,
@@ -36,16 +43,22 @@ gulp.task("scripts", function()
         .pipe(gulp_connect.reload())
 })
 
-gulp.task("markup", function()
-{
-    gulp.src(SOURCE_DIRECTORY + "/index.html")
-        .pipe(gulp_if(yargs.argv.compiled, gulp_minify_html()))
+gulp.task("styles", function() {
+    gulp.src(SOURCE_DIRECTORY + "/index.css")
+        .pipe(gulp_prefixify_css())
+        .on("error", handleErrorMessage)
+        .pipe(gulp_if(yargs.argv.compiled, gulp_minify_css()))
         .pipe(gulp.dest(BUILD_DIRECTORY))
         .pipe(gulp_connect.reload())
 })
 
-gulp.task("configs", function()
-{
+gulp.task("assets", function() {
+    gulp.src(SOURCE_DIRECTORY + "/assets/**/*", {base: SOURCE_DIRECTORY})
+        .pipe(gulp.dest(BUILD_DIRECTORY))
+        .pipe(gulp_connect.reload())
+})
+
+gulp.task("configs", function() {
     gulp.src("./package.json")
         .pipe(gulp_json_transform(function(data) {
             delete data["devDependencies"]
@@ -55,27 +68,26 @@ gulp.task("configs", function()
         .pipe(gulp.dest(BUILD_DIRECTORY))
 })
 
-gulp.task("default", function()
-{
+gulp.task("default", function() {
     del([BUILD_DIRECTORY], function() {
-        gulp.start(["markup", "scripts", "configs"])
+        gulp.start(["markup", "scripts", "styles", "assets", "configs"])
     })
 })
 
-gulp.task("watch", ["default"], function()
-{
+gulp.task("watch", ["default"], function() {
     gulp_connect.server({
         root: BUILD_DIRECTORY,
         livereload: true
     })
 
+    gulp.watch(SOURCE_DIRECTORY + "/**/*.html", ["markup"])
     gulp.watch(SOURCE_DIRECTORY + "/**/*.js", ["scripts"])
-    gulp.watch(SOURCE_DIRECTORY + "/index.html", ["markup"])
+    gulp.watch(SOURCE_DIRECTORY + "/**/*.css", ["styles"])
+    gulp.watch(SOURCE_DIRECTORY + "/assets/**/*", ["assets"])
     gulp.watch("./package.json", ["configs"])
 })
 
-function handleErrorMessage(error)
-{
+function handleErrorMessage(error) {
     gulp_util.log(chalk.bold.red(error.message))
     gulp_util.beep()
 }
