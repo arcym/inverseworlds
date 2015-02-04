@@ -1,4 +1,0 @@
-env-vars
-inline-css+js
-inline-assets
-continous-tests
