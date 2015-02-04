@@ -70,7 +70,13 @@ gulp.task("configs", function() {
 
 gulp.task("default", function() {
     del([BUILD_DIRECTORY], function() {
-        gulp.start(["markup", "scripts", "styles", "assets", "configs"])
+        gulp.start([
+            "markup",
+            "scripts",
+            "styles",
+            "assets",
+            "configs"
+        ])
     })
 })
 
