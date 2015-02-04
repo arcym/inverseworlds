@@ -17,44 +17,44 @@ var vinyl_source = require("vinyl-source-stream")
 var browserify = require("browserify")
 var aliasify = require("aliasify")
 
-var SOURCE_DIRECTORY = "./source"
-var BUILD_DIRECTORY = "./build"
+var INPUT_DIRECTORY = "./source"
+var OUTPUT_DIRECTORY = "./build"
 
 gulp.task("markup", function() {
-    gulp.src(SOURCE_DIRECTORY + "/index.html")
-        .pipe(gulp_if(yargs.argv.compiled, gulp_minify_html()))
-        .pipe(gulp.dest(BUILD_DIRECTORY))
+    gulp.src(INPUT_DIRECTORY + "/index.html")
+        .pipe(gulp_if(yargs.argv.minify, gulp_minify_html()))
+        .pipe(gulp.dest(OUTPUT_DIRECTORY))
         .pipe(gulp_connect.reload())
 })
 
 gulp.task("scripts", function() {
-    browserify(SOURCE_DIRECTORY + "/index.js")
+    browserify(INPUT_DIRECTORY + "/index.js")
         .transform(aliasify.configure({
             configDir: __dirname,
             aliases: {
-                "<source>": SOURCE_DIRECTORY
+                "<source>": INPUT_DIRECTORY
             }
         }))
         .bundle()
         .on('error', handleErrorMessage)
         .pipe(vinyl_source("index.js")).pipe(vinyl_buffer())
-        .pipe(gulp_if(yargs.argv.compiled, gulp_uglify()))
-        .pipe(gulp.dest(BUILD_DIRECTORY))
+        .pipe(gulp_if(yargs.argv.minify, gulp_uglify()))
+        .pipe(gulp.dest(OUTPUT_DIRECTORY))
         .pipe(gulp_connect.reload())
 })
 
 gulp.task("styles", function() {
-    gulp.src(SOURCE_DIRECTORY + "/index.css")
+    gulp.src(INPUT_DIRECTORY + "/index.css")
         .pipe(gulp_prefixify_css())
         .on("error", handleErrorMessage)
-        .pipe(gulp_if(yargs.argv.compiled, gulp_minify_css()))
-        .pipe(gulp.dest(BUILD_DIRECTORY))
+        .pipe(gulp_if(yargs.argv.minify, gulp_minify_css()))
+        .pipe(gulp.dest(OUTPUT_DIRECTORY))
         .pipe(gulp_connect.reload())
 })
 
 gulp.task("assets", function() {
-    gulp.src(SOURCE_DIRECTORY + "/assets/**/*", {base: SOURCE_DIRECTORY})
-        .pipe(gulp.dest(BUILD_DIRECTORY))
+    gulp.src(INPUT_DIRECTORY + "/assets/**/*", {base: INPUT_DIRECTORY})
+        .pipe(gulp.dest(OUTPUT_DIRECTORY))
         .pipe(gulp_connect.reload())
 })
 
@@ -65,11 +65,11 @@ gulp.task("configs", function() {
             delete data["dependencies"]
             return data
         }, 2))
-        .pipe(gulp.dest(BUILD_DIRECTORY))
+        .pipe(gulp.dest(OUTPUT_DIRECTORY))
 })
 
 gulp.task("default", function() {
-    del([BUILD_DIRECTORY], function() {
+    del([OUTPUT_DIRECTORY], function() {
         gulp.start([
             "markup",
             "scripts",
@@ -82,14 +82,14 @@ gulp.task("default", function() {
 
 gulp.task("watch", ["default"], function() {
     gulp_connect.server({
-        root: BUILD_DIRECTORY,
+        root: OUTPUT_DIRECTORY,
         livereload: true
     })
 
-    gulp.watch(SOURCE_DIRECTORY + "/**/*.html", ["markup"])
-    gulp.watch(SOURCE_DIRECTORY + "/**/*.js", ["scripts"])
-    gulp.watch(SOURCE_DIRECTORY + "/**/*.css", ["styles"])
-    gulp.watch(SOURCE_DIRECTORY + "/assets/**/*", ["assets"])
+    gulp.watch(INPUT_DIRECTORY + "/**/*.html", ["markup"])
+    gulp.watch(INPUT_DIRECTORY + "/**/*.js", ["scripts"])
+    gulp.watch(INPUT_DIRECTORY + "/**/*.css", ["styles"])
+    gulp.watch(INPUT_DIRECTORY + "/assets/**/*", ["assets"])
     gulp.watch("./package.json", ["configs"])
 })
 
